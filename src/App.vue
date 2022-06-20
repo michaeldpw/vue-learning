@@ -1,42 +1,71 @@
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
-import TheWelcome from "./components/TheWelcome.vue";
 import _ from 'lodash'
 export default {
   data() {
     return {
       span: "<span>a</span>",
-      debounceClick: null
+      debounceClick: null,
+      author: {
+        firstName: 'John',
+        lastName: 'Doe',
+        books: [
+          'Vue 2 - Advanced Guide',
+          'Vue 3 - Basic Guide',
+          'Vue 4 - The Mystery'
+        ]
+      }
     };
   },
   methods: {
     handleClick() {
       console.log("click");
     },
-    han() {
-
+    reduceBook() {
+      this.author.books.pop();
+    },
+    changeName() {
+      this.fullName = 'a b';
     }
   },
    created() {
-    this.debounceClick = _.debounce(this.handleClick, 500)
+    this.debounceClick = _.debounce(this.reduceBook, 500);
   },
   unmounted() {
     this.debounceClick.cancel();
+  },
+  computed: {
+    fullName: {
+      get() {
+        return this.author.firstName + ' ' + this.author.lastName;
+      },
+      set(newValue) {
+         // Note: we are using destructuring assignment syntax here.
+        [this.author.firstName, this.author.lastName] = newValue.split(' ');
+      }
+    },
+    hasBook() {
+      return this.author.books.length > 0 ? 'Yes' : 'No'
+    }
   }
 };
 </script>
 
 <template>
   <header>
-    <div v-html="span" v-on:click.prevent="debounceClick"></div>
+    <div>Full name: {{this.fullName}}</div>
+    <div>First name: {{this.author.firstName}}</div>
+    <div>Last name: {{this.author.lastName}}</div>
+    <div>Number of book: {{hasBook}}</div>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
+    <button v-on:click="debounceClick">reduce book</button>
+    <button v-on:click="changeName">Change Name</button>
+
+
+  
   </header>
 
   <main>
-    <TheWelcome />
+
   </main>
 </template>
 
@@ -86,7 +115,7 @@ a,
   }
 
   header {
-    display: flex;
+    /* display: flex; */
     place-items: center;
     padding-right: calc(var(--section-gap) / 2);
   }
