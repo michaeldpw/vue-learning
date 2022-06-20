@@ -1,26 +1,34 @@
 <script>
 import HelloWorld from "./components/HelloWorld.vue";
 import TheWelcome from "./components/TheWelcome.vue";
+import _ from 'lodash'
 export default {
   data() {
     return {
       span: "<span>a</span>",
+      debounceClick: null
     };
   },
   methods: {
     handleClick() {
-      alert("click");
+      console.log("click");
     },
     han() {
-      
+
     }
   },
+   created() {
+    this.debounceClick = _.debounce(this.handleClick, 500)
+  },
+  unmounted() {
+    this.debounceClick.cancel();
+  }
 };
 </script>
 
 <template>
   <header>
-    <div v-html="span" v-on:click.prevent="handleClick"></div>
+    <div v-html="span" v-on:click.prevent="debounceClick"></div>
 
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
